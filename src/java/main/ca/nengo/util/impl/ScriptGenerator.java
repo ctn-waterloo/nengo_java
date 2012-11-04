@@ -85,7 +85,9 @@ public class ScriptGenerator extends DFSIterator{
                 this.writer.write(code);
             } catch(ScriptGenException e) {
                 System.out.println(e.getMessage());
-            } 
+            }
         }
+        
+        
 	}
 }
