@@ -1089,7 +1089,7 @@ public class NetworkImpl implements Network, VisiblyMutable, VisiblyMutable.List
             py = String.format("%1s = %3s.make_subnetwork('%2s')\n\n", 
                     pythonNetworkName,
                     myName,
-                    (String)scriptData.get("netName"));
+                    scriptData.get("netName"));
         }
         else
         {
