@@ -206,4 +206,8 @@ public interface Network extends Node, Probeable {
      */
 	public String toPostScript(HashMap<String, Object> scriptData) throws ScriptGenException;
 
+	public void addStepListener(StepListener listener);
+	public void removeStepListener(StepListener listener);
+	public void fireStepListeners(float time);
+	
 }
