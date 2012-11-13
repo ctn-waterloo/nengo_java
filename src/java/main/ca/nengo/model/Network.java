@@ -31,6 +31,10 @@ import java.io.FileNotFoundException;
 
 import ca.nengo.sim.Simulator;
 import ca.nengo.util.impl.ScriptGenerator;
+import java.util.HashMap;
+
+import ca.nengo.sim.Simulator;
+import ca.nengo.util.ScriptGenException;
 
 /**
  * <p>A neural circuit, consisting of Nodes such as Ensembles and ExternalInputs. A Network is the
