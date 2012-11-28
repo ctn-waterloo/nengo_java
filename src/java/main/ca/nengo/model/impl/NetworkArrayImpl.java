@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.Callable;
 
 import ca.nengo.math.Function;
 import ca.nengo.model.InstantaneousOutput;
@@ -98,11 +97,11 @@ public class NetworkArrayImpl extends NetworkImpl {
 		
 		this.setName(name);
 		
-		myNodes = nodes.clone();
+		myNodes = nodes;
 		myNumNodes = myNodes.length;
+		
 		myNodeDimensions = new int[myNumNodes];
 		myDimension = 0;
-
 		for (int i = 0; i < myNumNodes; i++) {
 			myNodeDimensions[i] = myNodes[i].getDimension();
 			myDimension += myNodeDimensions[i];
@@ -116,10 +115,9 @@ public class NetworkArrayImpl extends NetworkImpl {
 			this.addNode(nodes[i]);
 			myNeurons += nodes[i].getNodeCount();
 		}
-		
+		createEnsembleOrigin("X");
 		this.setUseGPU(true);
 	}
-
 	
 	/** 
 	 * Create an Origin that concatenates the values of internal Origins.
@@ -232,6 +230,40 @@ public class NetworkArrayImpl extends NetworkImpl {
 		return getTermination(name);
 	}
 	
+	/**
+	 * Create a new decoded termination.  A new termination is created on each
+     * of the ensembles, which are then grouped together.  
+     *   
+	 * @param name The name of the newly created termination
+	 * @param matrix Transformation matrix which defines a linear map on incoming information,
+     *      onto the space of vectors that can be represented by this NetworkArray. The first dimension
+     *      is taken as matrix columns, and must have the same length as the Origin that will be connected
+     *      to this Termination. The second dimension is taken as matrix rows, and must have the same
+     *      length as the encoders of this NEFEnsemble.
+	 * @param tauPSC Post-synaptic time constant
+	 * @param modulatory Boolean value that is False for normal connections, True for modulatory connections 
+	 * (which adjust neural properties rather than the input current)
+	 * @return Termination that encapsulates all of the internal node terminations
+	 * @throws StructuralException
+	 */
+	public Termination addDecodedTermination(String name, float[][] matrix, float tauPSC, boolean modulatory) throws StructuralException {
+		assert matrix.length == myDimension;
+		
+		Termination[] terminations = new Termination[myNumNodes];
+		
+		int dimCount = 0;
+		
+		for (int i = 0; i < myNumNodes; i++) {
+			float[][] submatrix = MU.copy(matrix, dimCount, 0, myNodeDimensions[i], -1);
+
+			terminations[i] = myNodes[i].addDecodedTermination(name, submatrix, tauPSC, modulatory);
+			dimCount += myNodeDimensions[i];
+		}
+		
+		exposeTermination(new EnsembleTermination(this, name, terminations), name);
+		return getTermination(name);
+	}	
+
 	public Termination addIndexTermination(String name, float[][] matrix, float tauPSC) throws StructuralException {
 		return addIndexTermination(name, matrix, tauPSC, false, null);
 	}
@@ -321,7 +353,7 @@ public class NetworkArrayImpl extends NetworkImpl {
 		}
 		nonDecodedTerminations.addAll(decodedTerminations);
 		
-		return (Termination[])nonDecodedTerminations.toArray();
+		return nonDecodedTerminations.toArray(new Termination[0]);
 		
 	}
 	
