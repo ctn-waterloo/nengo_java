@@ -48,6 +48,7 @@ public class ScriptGenerator extends DFSIterator {
         return super.startDFS(node);
     }
 	
+    @SuppressWarnings("unchecked")
 	protected void pre(Node node) {
         if (parentNetwork.peek().getMetaData("templates") != null &&
         	    ((ArrayList)parentNetwork.peek().getMetaData("templates")).contains(node.getName())) 
@@ -95,6 +96,7 @@ public class ScriptGenerator extends DFSIterator {
         }
 	}
 	
+    @SuppressWarnings("unchecked")
 	protected void post(Node node)
 	{
         if (node instanceof Network && inTemplateNetwork <= 0)
