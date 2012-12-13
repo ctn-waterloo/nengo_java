@@ -95,11 +95,14 @@ public class GradientDescentApproximatorTest extends TestCase {
 		};
 
 		GradientDescentApproximator approximator = new GradientDescentApproximator(
-				new float[][]{{1f},{2f},{3f}}, new float[][]{{1f, 2f, 3f}}, constraints, true);
+			new float[][]{{1f},{2f},{3f}},
+			new float[][]{{1f,2f,3f}},
+			constraints,
+			true
+		);
 		assertEquals(1000, approximator.getMaxIterations());
 		approximator.setMaxIterations(500);
 		assertEquals(500, approximator.getMaxIterations());
-
 	}
 
 	/*
@@ -116,9 +119,13 @@ public class GradientDescentApproximatorTest extends TestCase {
 				return (Constraints) super.clone();
 			}
 		};
-
+		
 		GradientDescentApproximator approximator = new GradientDescentApproximator(
-				new float[][]{{1f},{2f},{3f}}, new float[][]{{1f, 2f, 3f}}, constraints, true);
+			new float[][]{{1f},{2f},{3f}},
+			new float[][]{{1f,2f,3f}},
+			constraints,
+			true
+		);
 		assertEquals(.000000001f, approximator.getTolerance());
 		approximator.setTolerance(.000001f);
 		assertEquals(.000001f, approximator.getTolerance());

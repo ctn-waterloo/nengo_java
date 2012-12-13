@@ -55,7 +55,6 @@ public class PoissonPDF extends AbstractFunction implements PDF {
 	@Override
 	public float map(float[] from) {
 		assert from.length == 1;
-
 		float result = 0;
 		int observation = (int) Math.floor(from[0]);
 
