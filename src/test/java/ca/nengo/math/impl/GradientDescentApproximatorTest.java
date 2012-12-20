@@ -1,25 +1,11 @@
 package ca.nengo.math.impl;
-
-import junit.framework.TestCase;
-import ca.nengo.TestUtil;
 import ca.nengo.math.Function;
 import ca.nengo.math.impl.GradientDescentApproximator.Constraints;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
-/**
- * Unit tests for GradientDescentApproximator.
- *
- * @author Bryan Tripp
- */
-public class GradientDescentApproximatorTest extends TestCase {
-
-	public GradientDescentApproximatorTest(String arg0) {
-		super(arg0);
-	}
-
-	protected void setUp() throws Exception {
-		super.setUp();
-	}
-
+public class GradientDescentApproximatorTest {
+	@Test
 	public void testFindCoefficients() {
 		float[] frequencies = new float[]{1, 5, 8};
 		float[] amplitudes = new float[]{.1f, .2f, .3f};
@@ -42,6 +28,7 @@ public class GradientDescentApproximatorTest extends TestCase {
 
 		GradientDescentApproximator.Constraints constraints = new GradientDescentApproximator.Constraints() {
 			private static final long serialVersionUID = 1L;
+			@Override
 			public boolean correct(float[] coefficients) {
 				boolean allCorrected = true;
 				for (int i = 0; i < coefficients.length; i++) {
@@ -67,21 +54,11 @@ public class GradientDescentApproximatorTest extends TestCase {
 			for (int i = 0; i < frequencies.length; i++) {
 				approx += coefficients[i] * values[i][j];
 			}
-			TestUtil.assertClose(approx, target.map(evalPoints[j]), 0.0001f);
+			assertEquals(approx, target.map(evalPoints[j]), 0.0001f);
 		}
-
-//		float[] estimate = MU.prod(MU.transpose(values), coefficients);
-//		Plotter.plot(target, 0, .01f, .99f, "Ideal");
-//		Plotter.plot(new TimeSeries1DImpl(MU.prod(evalPoints, new float[]{1}), estimate, Units.UNK), "Estimate");
-//
-//		try {
-//			Thread.sleep(1000*15);
-//		} catch (InterruptedException e) {}
 	}
-
-	/*
-	 * Test method for get- and setMaxIterations
-	 */
+	
+	@Test
 	public void testMaxIterations() {
 
 		GradientDescentApproximator.Constraints constraints = new GradientDescentApproximator.Constraints() {
@@ -104,12 +81,9 @@ public class GradientDescentApproximatorTest extends TestCase {
 		approximator.setMaxIterations(500);
 		assertEquals(500, approximator.getMaxIterations());
 	}
-
-	/*
-	 * Test method for get- and setTolerance
-	 */
+	
+	@Test
 	public void testTolerance() {
-
 		GradientDescentApproximator.Constraints constraints = new GradientDescentApproximator.Constraints() {
 			private static final long serialVersionUID = 1L;
 			public boolean correct(float[] coefficients) {
@@ -126,10 +100,9 @@ public class GradientDescentApproximatorTest extends TestCase {
 			constraints,
 			true
 		);
-		assertEquals(.000000001f, approximator.getTolerance());
+		assertEquals(.000000001f, approximator.getTolerance(), 0.0f);
 		approximator.setTolerance(.000001f);
-		assertEquals(.000001f, approximator.getTolerance());
-
+		assertEquals(.000001f, approximator.getTolerance(), 0.0f);
 	}
 
 }
