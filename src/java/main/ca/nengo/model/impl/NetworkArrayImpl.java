@@ -69,7 +69,7 @@ public class NetworkArrayImpl extends NetworkImpl {
 	private int myDimension;
 	private final int[] myNodeDimensions;
 	
-	private final NEFEnsembleImpl[] myNodes;
+	private NEFEnsembleImpl[] myNodes;
 	private Map<String, Origin> myOrigins;
 	private int myNeurons;
 
@@ -576,6 +576,12 @@ public class NetworkArrayImpl extends NetworkImpl {
 		try {
 			NetworkArrayImpl result = (NetworkArrayImpl) super.clone();
 			
+			// Clone node references
+			result.myNodes = new NEFEnsembleImpl[myNodes.length];
+			for (int i = 0; i < myNodes.length; i++) {
+				result.myNodes[i] = (NEFEnsembleImpl) result.getNode(myNodes[i].getName());
+			}
+			
 			// Clone array origins and ensemble terminations
 			for (Origin exposedOrigin : getOrigins()) {
 				Origin clonedOrigin = ((OriginWrapper) exposedOrigin).getBaseOrigin().clone(result);
@@ -589,6 +595,10 @@ public class NetworkArrayImpl extends NetworkImpl {
 			return result;
 		}
 		catch (CloneNotSupportedException e) {
+			System.err.println(e.getMessage());
+			throw new CloneNotSupportedException("Error cloning NetworkArrayImpl: " + e.getMessage());
+		}
+		catch (StructuralException e) {
 			System.err.println(e.getMessage());
 			throw new CloneNotSupportedException("Error cloning NetworkArrayImpl: " + e.getMessage());
 		}
