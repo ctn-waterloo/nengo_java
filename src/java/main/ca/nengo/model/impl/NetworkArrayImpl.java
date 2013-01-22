@@ -668,6 +668,10 @@ public class NetworkArrayImpl extends NetworkImpl {
 			return myDimensions;
 		}
 		
+		public Origin[] getNodeOrigins(){
+			return myOrigins;
+		}
+		
 		public void setValues(InstantaneousOutput values) {
 			float time = values.getTime();
 			Units units = values.getUnits();
